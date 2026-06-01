@@ -121,6 +121,7 @@ static int mmu_mmap(uint32_t flash_paddr, uint32_t size, const void **out_vaddr)
               vaddr_base);
 
     stub_lib_cache_stop();
+    stub_lib_cache_writeback_addr(vaddr_base, page_count * page_size);
 
     /* Save existing MMU entries */
     for (uint32_t i = 0; i < page_count; i++) {
@@ -158,6 +159,7 @@ static void mmu_munmap(void)
 
     uint32_t page_size = stub_target_mmu_get_page_size();
     stub_lib_cache_stop();
+    stub_lib_cache_writeback_addr(s_mmap_state.vaddr_base, s_mmap_state.page_count * page_size);
 
     /* Restore saved MMU entries */
     for (uint32_t i = 0; i < s_mmap_state.page_count; i++) {
